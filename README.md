@@ -25,7 +25,7 @@ There are additional file and memory cache maintenance functions to ensure they 
 1) Create an instance of AdaptiveImages in the onApplicationStart() method of your Application.cfc
 
 ```
-application.adaptiveImages  = New AdaptiveImages( resolutions=[ 320,480,1024 ] );
+application.adaptiveImages  = New adaptiveImages( resolutions=[ 320,480,1024 ] );
 ```
 
 2) Create a ColdFusion template in your webroot to invoke the AdaptiveImages component and pass image requests to it.
