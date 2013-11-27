@@ -4,7 +4,7 @@ The is an adapted ColdFusion port of Matt Wilcox's [Adaptive Images](http://adap
 If your design is "responsive", so that images are not given a fixed width or height but scaled to the width of their container, you can save significant bandwidth and speed up client load times by using AdaptiveImages to ensure end users do not have to download images that are larger than their device's screen width.
 
 ## Acknowledgements
-In addition to [Matt's code](https://github.com/MattWilcox/Adaptive-Images), I also took inspiration and code from [Raymond Camden's ColdFusion fork](https://github.com/cfjedimaster/Adaptive-Images)
+In addition to [Matt's PHP code](https://github.com/MattWilcox/Adaptive-Images), I also took inspiration and code from [Raymond Camden's ColdFusion fork](https://github.com/cfjedimaster/Adaptive-Images)
 
 ### Differences
 However, this is not a direct port of either project, placing more emphasis on performance through:
@@ -65,19 +65,19 @@ document.cookie='resolution='+Math.max(screen.width,screen.height)+("devicePixel
 
 ##Configuration options
 You can pass these arguments when instantiating AdaptiveImages.cfc:
- - `resolutions` *required*. An array of the device widths you wish to support, in pixels and in any order
- - `cacheFileOperations` boolean: default=true. Whether to cache source file paths and file existence tests to avoid unnecessary disk access
- - `checkForFileUpdates` boolean: default=false. Ensure updated source images are re-cached (requires disk access on every request)
- - `browserCacheSeconds` integer: default=2592000 (30 days). Number of seconds the BROWSER cache should last
- - `pixelDensityMultiplier` number between 1 and 3: default=1.5. By how much to multiply the resolution for "retina" displays as detected by the resolution cookie
- - `jpgQuality` number between 1 and 100: default=50. The quality of resized JPGs
+ - `resolutions` *required*. An array of the device widths you wish to support, in pixels and in any order.
+ - `cacheFileOperations` boolean: default=true. Whether to cache source file paths and file existence tests to avoid unnecessary disk access. You will normally want to keep this enabled unless your source files change very frequently and you are not using the cache maintenance functions, or you are memory-constrained and have a lot of files (but note that only the *paths* are stored, not the images themselves).
+ - `checkForFileUpdates` boolean: default=false. Ensure updated source images are re-cached (requires disk access on every request).
+ - `browserCacheSeconds` integer: default=2592000 (30 days). Number of seconds the *browser* cache should last.
+ - `pixelDensityMultiplier` number between 1 and 3: default=1.5. By how much to multiply the resolution for "retina" displays as detected by the resolution cookie.
+ - `jpgQuality` number between 1 and 100: default=50. The quality of resized JPGs.
  - `sharpen` boolean: default=true. Shrinking images can blur details. Perform a sharpen on re-scaled images?
- - `interpolation` string: defalt="highPerformance". Interpolation algorithm to use when scaling/resizing file (depending on whether performance or quality is paramount)
- - `writeLogs` boolean: default=false. Whether or not to log activity - don't use in production
+ - `interpolation` string: defalt="highPerformance". Interpolation algorithm to use when scaling/resizing file (depending on whether performance or quality is paramount).
+ - `writeLogs` boolean: default=false. Whether or not to log activity - don't use in production.
  - `logFilename`: string: default="adaptive-images". If logging, the name of the file.
 
 ## Updating source files
-For best performance don't turn on the `checkForFileUpdates` option. If you need to update or delete a source image, call the `deleteCachedCopies( fullImagePath )` method from your update/delete code passing in the full path of the image file.
+For best performance keep the `checkForFileUpdates` option disabled. If you need to update or delete a source image, call the `deleteCachedCopies( fullImagePath )` method from your update/delete code passing in the full path of the image file.
 
 ## Housekeeping
 Use the `cleanupCacheFolders( sourceImageFolder )` method periodically to remove any cached files where the source image no longer exists. Currently this function is not recursive, so needs to be applied separately to each parent source image folder containing cached image folders.
