@@ -1,17 +1,17 @@
 # Adaptive Images
-The is an adapted ColdFusion port of Matt Wilcox's [Adaptive Images](http://adaptive-images.com/), a server-side solution to automatically create, cache, and deliver device-appropriate versions of your website’s images.
+The is a ColdFusion version of Matt Wilcox's [Adaptive Images](http://adaptive-images.com/), a server-side solution to automatically create, cache, and deliver device-appropriate versions of your website’s images.
 
-If your design is "responsive", so that images are not given a fixed width or height but scaled to the width of their container, you can save significant bandwidth and speed up client load times by using AdaptiveImages to ensure end users do not have to download images that are larger than their device's screen width.
+If your site's design is "responsive", so that images are not given a fixed width or height but scaled to the width of their container, you can save bandwidth and speed up client load times by using AdaptiveImages to ensure end users do not have to download images intended for the widest screens. Instead, smaller versions will be created and served as necessary, according to the detected resolution of the device.
 
 ## Acknowledgements
 In addition to [Matt's PHP code](https://github.com/MattWilcox/Adaptive-Images), I also took inspiration and code from [Raymond Camden's ColdFusion fork](https://github.com/cfjedimaster/Adaptive-Images)
 
 ### Differences
-However, this is not a direct port of either project, placing more emphasis on performance through:
+However, this is not a direct port of either project. It places more emphasis on performance through:
 
- - in-memory caching of file path and existence tests to reduce disk access;
+ - in-memory caching of file path and existence tests to minimise disk access;
  - assuming the source file existence check has been handled by the web server rewrite engine;
- - removal of some configuration options such as the `cache_path` - cached files are stored by convention in numbered folders in the same location as the source image;
+ - removal of some configuration options such as the `cache_path` - cached files are stored by convention in folders named by resolution width in the same location as the source image;
  - checking that the bytesize of the resized file is no larger than the original (sometimes downscaling an image can actually increase its file size);
 
 There are additional file and memory cache maintenance functions to ensure they don't become stale.
@@ -72,7 +72,7 @@ You can pass these arguments when instantiating AdaptiveImages.cfc:
  - `pixelDensityMultiplier` number between 1 and 3: default=1.5. By how much to multiply the resolution for "retina" displays as detected by the resolution cookie.
  - `jpgQuality` number between 1 and 100: default=50. The quality of resized JPGs.
  - `sharpen` boolean: default=true. Shrinking images can blur details. Perform a sharpen on re-scaled images?
- - `interpolation` string: defalt="highPerformance". Interpolation algorithm to use when scaling/resizing file (depending on whether performance or quality is paramount).
+ - `interpolation` string: default="highPerformance". Interpolation algorithm to use when scaling/resizing file (depending on whether performance or quality is paramount).
  - `writeLogs` boolean: default=false. Whether or not to log activity - don't use in production.
  - `logFilename`: string: default="adaptive-images". If logging, the name of the file.
 
