@@ -1,5 +1,7 @@
 # Adaptive Images
-The is an adapted ColdFusion port of Matt Wilcox's [Adaptive Images](http://adaptive-images.com/), a server-side solution to automatically create, cache, and deliver device-appropriate versions of your website’s content images.
+The is an adapted ColdFusion port of Matt Wilcox's [Adaptive Images](http://adaptive-images.com/), a server-side solution to automatically create, cache, and deliver device-appropriate versions of your website’s images.
+
+If your design is "responsive", so that images are not given a fixed width or height but scaled to the width of their container, you can save significant bandwidth and speed up client load times by using AdaptiveImages to ensure end users do not have to download images that are larger than their device's screen width.
 
 ## Acknowledgements
 In addition to [Matt's code](https://github.com/MattWilcox/Adaptive-Images), I also took inspiration and code from [Raymond Camden's ColdFusion fork](https://github.com/cfjedimaster/Adaptive-Images)
