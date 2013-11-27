@@ -9,8 +9,8 @@ However, this is not a direct port of either project, placing more emphasis on p
 
  - in-memory caching of file path and existence tests to reduce disk access;
  - assuming the source file existence check has been handled by the web server rewrite engine;
- - removal of some configuration options such as the `cache_path` - cached files are stored by convention in numbered folders in the same location as the source image.
- - checking that the bytesize of the resized file is no larger than the original (sometimes downscaling an image can actually increase its file size)
+ - removal of some configuration options such as the `cache_path` - cached files are stored by convention in numbered folders in the same location as the source image;
+ - checking that the bytesize of the resized file is no larger than the original (sometimes downscaling an image can actually increase its file size);
 
 There are additional file and memory cache maintenance functions to ensure they don't become stale.
 
