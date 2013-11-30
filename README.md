@@ -3,6 +3,8 @@ This is a ColdFusion version of Matt Wilcox's [Adaptive Images](http://adaptive-
 
 If your site's design is "responsive", so that images are not given a fixed width or height but scaled to the width of their container, you can save bandwidth and speed up client load times by using AdaptiveImages to ensure end users do not have to download images intended for the widest screens. Instead, smaller versions will be created and served as necessary, according to the detected resolution of the device.
 
+For background, see [this blog post](http://cfsimplicity.com/73/the-simplicity-of-adaptive-images).
+
 ## Acknowledgements
 In addition to [Matt's PHP code](https://github.com/MattWilcox/Adaptive-Images), I also took inspiration and code from [Raymond Camden's ColdFusion fork](https://github.com/cfjedimaster/Adaptive-Images)
 
