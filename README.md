@@ -24,10 +24,10 @@ There are additional file and memory cache maintenance functions to ensure they 
 
 ## Usage
 
-1) Create an instance of AdaptiveImages in the onApplicationStart() method of your Application.cfc
+1) Create an instance of AdaptiveImages in the onApplicationStart() method of your Application.cfc, specifying the resolutions you want to support (use your web analytics to determine the most common device widths).
 
 ```
-application.adaptiveImages  = New adaptiveImages( resolutions=[ 320,480,1024 ] );
+application.adaptiveImages  = New adaptiveImages( resolutions=[ 320,480,768,1024,1400,1680 ] );
 ```
 
 2) Create a ColdFusion template in your webroot to invoke the AdaptiveImages component and pass image requests to it.
