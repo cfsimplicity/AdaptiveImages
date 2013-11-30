@@ -46,7 +46,7 @@ catch( any exception ){
 
 (Note: `cgi.HTTP_X_ORIGINAL_URL` is the variable made available in ColdFusion by IIS7. If using a different web server, it will have its own cgi scoped key name for the originally requested URL).
 
-3) Add a rule to your web server's Rewrite Engine to intercept requests for image files and pass them to the CF template. Your rule should define which images you want AdaptiveImages to handle. Here's an example in IIS7 format:
+3) Add a rule to your web server's Rewrite Engine to intercept requests for image files and pass them to the CF template. Your rule should define which images you want AdaptiveImages to handle. Here's an example in **IIS7** format:
 
 ```
 <rule name="Adaptive Images" stopProcessing="true">
@@ -62,7 +62,9 @@ catch( any exception ){
 
 4) Add the following javascript to the HTML `<head>` of all of your web pages to detect and store the client device's resolution/pixel density.
 ```
+<script>
 document.cookie='resolution='+Math.max(screen.width,screen.height)+("devicePixelRatio" in window ? ","+devicePixelRatio : ",1")+'; path=/';
+</script>
 ```
 
 ##Configuration options
