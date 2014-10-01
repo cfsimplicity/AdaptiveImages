@@ -1,7 +1,7 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 <!--- 
 	Requirements for running test suite:
-		adaptiveImages and MXUnit installed to webroot: ie. /adaptiveImages and /mxunit
+		Web server directories (virtual or real), and CF mappings for both /adaptiveImages and /mxunit
  --->
 <cfscript>
 void function beforeTests(){

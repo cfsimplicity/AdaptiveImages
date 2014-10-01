@@ -19,7 +19,7 @@ However, this is not a direct port of either project. It places more emphasis on
 There are additional file and memory cache maintenance functions to ensure they don't become stale.
 
 ## Requirements
- - Adobe ColdFusion 9.0.1+ (Not yet tested on any other platforms)
+ - Adobe ColdFusion 9.0.1+ (Test suite also passes on Railo 4.2)
  - Web server URL rewriting
 
 ## Usage
