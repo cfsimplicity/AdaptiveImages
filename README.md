@@ -36,7 +36,7 @@ application.adaptiveImages  = New adaptiveImages( resolutions=[ 320,480,768,1024
 ```
 <cfscript>
 try{
-	application.adaptiveImages().process( cgi.HTTP_X_ORIGINAL_URL );
+	application.adaptiveImages.process( cgi.HTTP_X_ORIGINAL_URL );
 }
 catch( any exception ){
 	abort;
