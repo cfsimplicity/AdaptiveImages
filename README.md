@@ -19,7 +19,8 @@ However, this is not a direct port of either project. It places more emphasis on
 There are additional file and memory cache maintenance functions to ensure they don't become stale.
 
 ## Requirements
- - Adobe ColdFusion 9.0.1+ (Test suite also passes on Railo 4.2)
+ - Adobe ColdFusion 9.0.1 (Likely to work on later versions but not tested)
+ - Railo 4.2 or Lucee Server 4.5
  - Web server URL rewriting
 
 ## Usage
