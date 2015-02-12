@@ -52,7 +52,7 @@ public function process( required string originalUrl ){
 		var resolution	=	resolution();
 		if( resolution GT config.largestResolution ){
 			_log( "AI: Client resolution #resolution# is larger than largest configured resolution, so sending original" );
-			return sendImage( sourceFilePath,mimeType );
+			return this.sendImage( sourceFilePath,mimeType );
 		}
 		var resolutionFolderName	= resolution;
 		_log( "AI: Resolution set=#resolution#" );
@@ -62,10 +62,10 @@ public function process( required string originalUrl ){
 		if( cachedFileExists( cachedFilePath ) ){
 			if( !config.checkForFileUpdates ){ 
 				_log( "AI: Sending cached file without checking for an updated source" );
-				return sendImage( cachedFilePath,mimeType );
+				return this.sendImage( cachedFilePath,mimeType );
 			} else if( !fileHasBeenUpdated( sourceFilePath,cachedFilePath ) ){
 				_log( "AI: Sending cached file as source has not been updated" );
-				return sendImage( cachedFilePath,mimeType );
+				return this.sendImage( cachedFilePath,mimeType );
 			}
 		}
 		// not in cache, or has been updated, so continue
@@ -73,7 +73,7 @@ public function process( required string originalUrl ){
 		if( sourceImage.width LTE resolution ){ 
 			// No need to downscale because the width of the source image is already less than the client width
 			_log( "AI: Source width #sourceImage.width# is the same size or smaller than client resolution #resolution#" );
-			return sendImage( sourceFilePath,mimeType );
+			return this.sendImage( sourceFilePath,mimeType );
 		}
 		var newImage	=	generateImage( sourceImage,resolution );
 		ensureCacheFolderExists( cacheFolderPath );
@@ -81,7 +81,7 @@ public function process( required string originalUrl ){
 		ImageWrite( newImage,cachedFilePath,config.jpgQuality/100 );
 		checkCachedImageIsNotLargerThanSource( cachedFilePath,sourceFilePath );
 		// send image to client
-		return sendImage( cachedFilePath,mimeType );
+		return this.sendImage( cachedFilePath,mimeType );
 	}
 	catch( any exception ){
 		_log( "AI: Error Occured : #exception.message#" );
@@ -129,7 +129,7 @@ private boolean function cookieIsValid(){
 
 /* Send different defaults to mobile and desktop */
 private numeric function defaultResolution(){
-	return isMobile()? config.smallestResolution: config.largestResolution;
+	return this.isMobile()? config.smallestResolution: config.largestResolution;
 }
 
 private numeric function resolution(){

@@ -1,6 +1,5 @@
 <cfscript>
-request.testSuite = New mxunit.framework.TestSuite().testSuite();
-request.testSuite.addAll( "adaptiveimages.tests.tests" );
-request.results = request.testSuite.run();
+testPaths = [ "root.tests.tests" ];
+testRunner = New testbox.system.testbox( testPaths );
+WriteOutput( testRunner.run() );
 </cfscript>
-<cfoutput>#request.results.getResultsOutput( "html" )#</cfoutput>  

@@ -88,7 +88,7 @@ For best performance keep the `checkForFileUpdates` option disabled. If you need
 Use the `cleanupCacheFolders( sourceImageFolder )` method periodically to remove any cached files where the source image no longer exists. Currently this function is not recursive, so needs to be applied separately to each parent source image folder containing cached image folders.
 
 ## Test Suite
-Tests require [MXUnit 2.0](http://mxunit.org/)
+Tests require [TestBox 2.1](https://github.com/Ortus-Solutions/TestBox). You will need to create an application mapping for `/testbox`.
 
 ## Legal
 The original Adaptive Images by Matt Wilcox is licensed under a [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/)
