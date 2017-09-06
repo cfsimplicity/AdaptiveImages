@@ -4,6 +4,7 @@
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
 		,boolean cacheFileOperations: true // cache source file paths and file existence tests to avoid unnecessary disk access
 		,boolean checkForFileUpdates: false // ensures updated source images are re-cached, but requires disk access on every request
+		,string cacheFolderName: "" // sub-folder in which to store the resized images
 		,numeric browserCacheSeconds: 2592000 // how long the BROWSER cache should last (30 days by default)
 		,numeric pixelDensityMultiplier: 1.5 // by how much to multiply the resolution for "retina" displays. Number between 1 and 3
 		,numeric jpgQuality: 50 // the quality of any generated JPGs on a scale of 1 to 100
@@ -14,6 +15,8 @@
 	)
 	{	
 		variables.config = arguments;
+		config.cacheFolderName = Trim( cacheFolderName ); //ensure it's a string
+		variables.hasCacheFolderName = config.cacheFolderName.Len();
 		validateConfig( config );
 		ArraySort( config.resolutions, "numeric","asc" );// smallest to largest
 		config.smallestResolution = config.resolutions[ 1 ];
@@ -23,7 +26,7 @@
 	}
 
 	/* The main public method to serve images */
-	/* Pass in the original requested URL as supplied by the URL Rewrite engine. For IIS7 this is cgi.HTTP_X_ORIGINAL_URL */
+	/* Pass in the original requested URL as supplied by the URL Rewrite engine. For IIS this is cgi.HTTP_X_ORIGINAL_URL */
 	public function process( required string originalUrl ){
 		try{
 			var requestedFileUri = UrlDecode( originalUrl );
@@ -38,7 +41,7 @@
 				_log( "AI: Client resolution #resolution# is larger than largest configured resolution, so sending original" );
 				return sendImage( sourceFilePath, mimeType );
 			}
-			var resolutionFolderName = resolution;
+			var resolutionFolderName = resolutionFolderName( resolution );
 			_log( "AI: Resolution set=#resolution#" );
 			var cacheFolderPath = sourceFolderPath & resolutionFolderName & "/";
 			var cachedFilePath = cacheFolderPath & requestedFilename;
@@ -111,7 +114,7 @@
 		var sourceFiles = DirectoryList( sourceFolderPath, false, "name" );
 		var cachedImages = [];
 		for( var resolution in config.resolutions ){
-			var resolutionFolderPath = sourceFolderPath & resolution & "/";
+			var resolutionFolderPath = sourceFolderPath & resolutionFolderName( resolution ) & "/";
 			if( !DirectoryExists( resolutionFolderPath ) )
 				continue;
 			cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
@@ -197,6 +200,12 @@
 		}
 		// fallback, should never run
 		return config.largestResolution;
+	}
+
+	private string function resolutionFolderName( required numeric resolution ){
+		if( !hasCacheFolderName )
+			return resolution;
+		return config.cacheFolderName & "/" & resolution;
 	}
 
 	/* File/folder functions */

@@ -173,7 +173,7 @@
 
 			it( "detects and caches cached file existence", function() {
 				makePublic( ai, "cachedFileExists" );
-				var cacheFilePath = createCachedFile( 300 );
+				var cacheFilePath = createCachedFile( 300, ai );
 				expect( ai.cachedFileExists( cacheFilePath ) ).toBeTrue();
 				var cache = ai.getFileOperationsCache();
 				expect( cache ).toHaveKey( cacheFilePath );
@@ -183,7 +183,7 @@
 			it( "sends cached image if it exists", function() {
 				ai.$property( propertyName: "sendImage", mock: sendImage );
 				ai[ "setFileOperationsCacheValue" ] = setFileOperationsCacheValue; // add this temporary method
-				var cacheFilePath = createCachedFile( 320 );
+				var cacheFilePath = createCachedFile( 320, ai );
 				ai.setFileOperationsCacheValue( cacheFilePath, true );
 				setResolutionCookie( "300,1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
@@ -215,6 +215,18 @@
 				deleteFolder( cacheFolderPath );
 			} );
 
+			it( "creates cache folder and caches path using optional cache folder name", function() {
+				variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
+				makePublic( ai, "ensureCacheFolderExists" );
+				var cacheFolderPath = imageFolderPath & "ai-cache/" & 320 & "/";
+				deleteFolder( cacheFolderPath );//ensure it doesn't exist.
+				ai.ensureCacheFolderExists( cacheFolderPath );
+				expect( DirectoryExists( cacheFolderPath ) ).toBeTrue();
+				var cache = ai.getFileOperationsCache();
+				expect( cache ).toHaveKey( cacheFolderPath );
+				deleteFolder( imageFolderPath & "ai-cache/" );
+			} );
+
 			it( "caches a copy of the source if the resized image is larger in bytes", function() {
 				makePublic( ai, "checkCachedImageIsNotLargerThanSource" );
 				var largerTestImagePath = imageFolderPath & "largerFileSizeThanSource.jpg";
@@ -240,6 +252,18 @@
 				deleteFolder( cacheFolderPath );
 			} );
 
+			it( "caches and sends an image sized to the detected resolution if not already in cache, using optional cache folder name ", function() {
+				variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
+				prepareMock( ai );
+				ai.$property( propertyName: "sendImage", mock: sendImage );
+				var cacheFolderPath = imageFolderPath & "ai-cache/" & 320 & "/";
+				var cacheFilePath = cacheFolderPath & "test.jpg";
+				deleteFolder( cacheFolderPath );//ensure it doesn't exist.
+				setResolutionCookie( "300,1" );
+				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
+				deleteFolder( imageFolderPath & "ai-cache/" );
+			} );
+
 		});
 
 	}
@@ -257,11 +281,12 @@
 
 	/* Helpers */
 	string function forwardSlashes( required string path ){
-		return Replace( path,"\","/","ALL" );
+		return path.Replace( "\", "/", "ALL" );
 	}
 
-	string function createCachedFile( resolution=300 ){
-		var filePath = imageFolderPath & resolution & "/" & imageFilename;
+	string function createCachedFile( required numeric resolution, required ai  ){
+		makePublic( ai, "resolutionFolderName" );
+		var filePath = imageFolderPath & ai.resolutionFolderName( resolution ) & "/" & imageFilename;
 		createFile( filePath );
 		return filePath;
 	}
@@ -271,13 +296,13 @@
 		if( !DirectoryExists( folderPath ) )
 			DirectoryCreate( folderPath );
 		if( !FileExists( path ) ){
-			FileWrite( path,"test" );
+			FileWrite( path, "test" );
 		}
 	}
 
 	void function deleteFolder( path ){
 		if( DirectoryExists( path ) )
-			DirectoryDelete( path,true );
+			DirectoryDelete( path, true );
 	}
 
 	void function setResolutionCookie( required string value ){
