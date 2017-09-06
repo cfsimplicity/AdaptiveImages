@@ -4,7 +4,7 @@
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
 		,boolean cacheFileOperations: true // cache source file paths and file existence tests to avoid unnecessary disk access
 		,boolean checkForFileUpdates: false // ensures updated source images are re-cached, but requires disk access on every request
-		,numeric browserCacheSeconds: ( 60*60*24*30 ) // how long the BROWSER cache should last (seconds, minutes, hours, days. 30 days by default)
+		,numeric browserCacheSeconds: 2592000 // how long the BROWSER cache should last (30 days by default)
 		,numeric pixelDensityMultiplier: 1.5 // by how much to multiply the resolution for "retina" displays. Number between 1 and 3
 		,numeric jpgQuality: 50 // the quality of any generated JPGs on a scale of 1 to 100
 		,boolean sharpen: true // Shrinking images can blur details, perform a sharpen on re-scaled images?
