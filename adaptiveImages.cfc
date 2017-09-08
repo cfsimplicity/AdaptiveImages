@@ -32,7 +32,7 @@
 			var requestedFileUri = UrlDecode( originalUrl );
 			var requestedFilename = ListLast( requestedFileUri, "/" );
 			var	sourceFilePath = getSourceFilePath( requestedFileUri );
-			var sourceFolderPath =	GetDirectoryFromPath( sourceFilePath );
+			var sourceFolderPath = GetDirectoryFromPath( sourceFilePath );
 			var requestedFileExtension = ListLast( requestedFilename, "." );
 			_log( "AI: Request for: #requestedFileUri# which translates to #sourceFilePath#" );
 			var mimeType = mimeType( requestedFileExtension );
@@ -66,14 +66,14 @@
 			var newImage = generateImage( sourceImage, resolution );
 			ensureCacheFolderExists( cacheFolderPath );
 			// save the new file in the appropriate path, and send a version to the browser
-			ImageWrite( newImage,cachedFilePath, config.jpgQuality/100 );
+			ImageWrite( newImage, cachedFilePath, config.jpgQuality / 100 );
 			checkCachedImageIsNotLargerThanSource( cachedFilePath, sourceFilePath );
 			// send image to client
 			return sendImage( cachedFilePath, mimeType );
 		}
 		catch( any exception ){
 			_log( "AI: Error Occured : #exception.message#" );
-			cfheader( statuscode: "503", statustext="Temporary problem" );
+			cfheader( statuscode: "503", statustext: "Temporary problem" );
 			abort;
 		}
 	}
@@ -99,7 +99,7 @@
 		if( !FileExists( imageFullPath ) )
 			return;
 		imageFullPath	=	forwardSlashes( imageFullPath );
-		var sourceFolderPath	=	GetDirectoryFromPath( imageFullPath );
+		var sourceFolderPath = GetDirectoryFromPath( imageFullPath );
 		for( var resolution in config.resolutions ){
 			var cachedFile	=	sourceFolderPath & resolution & "/" & GetFileFromPath( imageFullPath );
 			if( FileExists( cachedFile ) )
@@ -119,7 +119,7 @@
 				continue;
 			cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			for( var image in cachedImages ){
-				if( !ArrayFindNoCase( sourceFiles,image ) )
+				if( !ArrayFindNoCase( sourceFiles, image ) )
 					FileDelete( resolutionFolderPath & image );
 			}
 		}
@@ -186,9 +186,8 @@
 		var	clientPixelDensity = cookieData[ 2 ];
 		var maxImageWidth = clientWidth;
 		// if pixel density greater than 1, then we need to be smart about adapting and fitting into the defined breakpoints
-		if( clientPixelDensity GT 1 ){
+		if( clientPixelDensity GT 1 )
 			maxImageWidth = ( clientWidth * config.pixelDensityMultiplier );
-		}
 		_log( "AI: maxImageWidth=#maxImageWidth#" );
 		// actual resolution is bigger than largest defined resolution
 		if( maxImageWidth GT config.largestResolution )
@@ -212,14 +211,14 @@
 
 	// Always use forward slashes for consistency
 	private string function forwardSlashes( required string path ){
-		return Replace( path, "\", "/", "ALL" );
+		return path.Replace( "\", "/", "ALL" );
 	}
 
 	private string function getSourceFilePath( required string fileUri ){
 		var filePath = forwardSlashes( ExpandPath( fileUri ) );
 		if( !config.cacheFileOperations )
 			return filePath;
-		var cacheKey = REReplace( fileUri, "^/", "" );// CF vars can't begin with a slash
+		var cacheKey = fileUri.REReplace( "^/", "" );// CF vars can't begin with a slash
 		if( StructKeyExists( fileOperationsCache,cacheKey ) ){
 			_log( "AI: Using cached source file path" );
 			return fileOperationsCache[ cacheKey ].path;
@@ -239,7 +238,7 @@
 		if( !config.cacheFileOperations )
 			return DirectoryExists( path );
 		var cacheKey = path;
-		if( StructKeyExists( fileOperationsCache, cacheKey ) ){
+		if( fileOperationsCache.KeyExists( cacheKey ) ){
 			_log( "AI: Using cached existence test for resolution cache folder" );
 			return true;
 		}
@@ -261,7 +260,7 @@
 	private boolean function cachedFileExists( required string path ){
 		if( !config.cacheFileOperations )
 			return FileExists( path );
-		if( StructKeyExists( fileOperationsCache, path ) ){
+		if( fileOperationsCache.KeyExists( path ) ){
 			_log( "AI: Using cached existence test for cached path" );
 			return true;
 		}
