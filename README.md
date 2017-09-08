@@ -13,14 +13,13 @@ However, this is not a direct port of either project. It places more emphasis on
 
  - in-memory caching of file path and existence tests to minimise disk access;
  - assuming the source file existence check has been handled by the web server rewrite engine;
- - removal of some configuration options such as the `cache_path` - cached files are stored by convention in folders named by resolution width in the same location as the source image;
  - checking that the bytesize of the resized file is no larger than the original (sometimes downscaling an image can actually increase its file size);
 
 There are additional file and memory cache maintenance functions to ensure they don't become stale.
 
 ## Requirements
- - Adobe ColdFusion 9.0.1 (Likely to work on later versions but not tested)
- - Railo 4.2 or Lucee Server 4.5
+ - Lucee Server 4.5 or later
+ - Adobe ColdFusion 11 or later
  - Web server URL rewriting
 
 ## Usage
@@ -28,7 +27,7 @@ There are additional file and memory cache maintenance functions to ensure they 
 1) Create an instance of AdaptiveImages in the onApplicationStart() method of your Application.cfc, specifying the resolutions you want to support (use your web analytics to determine the most common device widths).
 
 ```
-application.adaptiveImages  = New adaptiveImages( resolutions=[ 320,480,768,1024,1400,1680 ] );
+application.adaptiveImages = New adaptiveImages( resolutions: [ 320, 480, 768, 1024, 1400, 1680 ] );
 ```
 
 2) Create a ColdFusion template in your webroot to invoke the AdaptiveImages component and pass image requests to it.
@@ -45,9 +44,9 @@ catch( any exception ){
 </cfscript>
 ```
 
-(Note: `cgi.HTTP_X_ORIGINAL_URL` is the variable made available in ColdFusion by IIS7. If using a different web server, it will have its own cgi scoped key name for the originally requested URL).
+(Note: `cgi.HTTP_X_ORIGINAL_URL` is the variable made available in ColdFusion by IIS7+. If using a different web server, it will have its own cgi scoped key name for the originally requested URL).
 
-3) Add a rule to your web server's Rewrite Engine to intercept requests for image files and pass them to the CF template. Your rule should define which images you want AdaptiveImages to handle. Here's an example in **IIS7** format:
+3) Add a rule to your web server's Rewrite Engine to intercept requests for image files and pass them to the CF template. Your rule should define which images you want AdaptiveImages to handle. Here's an example in **IIS7+** format:
 
 ```
 <rule name="Adaptive Images" stopProcessing="true">
@@ -73,6 +72,7 @@ You can pass these arguments when instantiating AdaptiveImages.cfc:
  - `resolutions` *required*. An array of the device widths you wish to support, in pixels and in any order.
  - `cacheFileOperations` boolean: default=true. Whether to cache source file paths and file existence tests to avoid unnecessary disk access. You will normally want to keep this enabled unless your source files change very frequently and you are not using the cache maintenance functions, or you are memory-constrained and have a lot of files (but note that only the *paths* are stored, not the images themselves).
  - `checkForFileUpdates` boolean: default=false. Ensure updated source images are re-cached (requires disk access on every request).
+ - `cacheFolderName` string: default="". Store the resized images in a sub-folder with this name
  - `browserCacheSeconds` integer: default=2592000 (30 days). Number of seconds the *browser* cache should last.
  - `pixelDensityMultiplier` number between 1 and 3: default=1.5. By how much to multiply the resolution for "retina" displays as detected by the resolution cookie.
  - `jpgQuality` number between 1 and 100: default=50. The quality of resized JPGs.
@@ -97,7 +97,7 @@ This port is licensed under an MIT license
 
 ###The MIT License (MIT)
 
-Copyright (c) 2013 Julian Halliwell
+Copyright (c) 2017 Julian Halliwell
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
