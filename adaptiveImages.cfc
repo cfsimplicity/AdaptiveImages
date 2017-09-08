@@ -103,7 +103,7 @@ component{
 		imageFullPath	=	forwardSlashes( imageFullPath );
 		var sourceFolderPath = GetDirectoryFromPath( imageFullPath );
 		for( var resolution in config.resolutions ){
-			var cachedFile	=	sourceFolderPath & resolution & "/" & GetFileFromPath( imageFullPath );
+			var cachedFile	=	sourceFolderPath & resolutionFolderName( resolution ) & "/" & GetFileFromPath( imageFullPath );
 			if( FileExists( cachedFile ) )
 				FileDelete( cachedFile );
 		}

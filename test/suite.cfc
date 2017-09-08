@@ -288,6 +288,34 @@
 
 			});
 
+			describe( "deleteCachedCopies", function() {
+				
+				it( "deletes cached resolution images for a given image", function() {
+					var cacheFilePath1 = createCachedFile( 320, ai );
+					var cacheFilePath2 = createCachedFile( 480, ai );
+					expect( FileExists( cacheFilePath1 ) ).toBeTrue();
+					expect( FileExists( cacheFilePath2 ) ).toBeTrue();
+					ai.deleteCachedCopies( sourceImagePath );
+					expect( FileExists( cacheFilePath1 ) ).toBeFalse();
+					expect( FileExists( cacheFilePath2 ) ).toBeFalse();
+					ai.cleanupCacheFolders( imageFolderPath );
+				} );
+
+				it( "deletes cached resolution images for a given image using optional cache folder name", function() {
+					variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
+					var cacheFilePath1 = createCachedFile( 320, ai );
+					var cacheFilePath2 = createCachedFile( 480, ai );
+					expect( FileExists( cacheFilePath1 ) ).toBeTrue();
+					expect( FileExists( cacheFilePath2 ) ).toBeTrue();
+					ai.deleteCachedCopies( sourceImagePath );
+					expect( FileExists( cacheFilePath1 ) ).toBeFalse();
+					expect( FileExists( cacheFilePath2 ) ).toBeFalse();
+					ai.cleanupCacheFolders( imageFolderPath );
+					deleteFolder( imageFolderPath & "ai-cache/" );
+				} );
+
+			} );
+
 		});
 
 	}
