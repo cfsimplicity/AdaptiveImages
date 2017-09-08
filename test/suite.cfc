@@ -25,7 +25,7 @@
 
 			beforeEach( function( currentSpec ) {
 				variables.ai = New root.adaptiveImages( [ "480","320" ] );
-				prepareMock( ai )
+				prepareMock( ai );
 			});
 
 			describe( "on init",function(){
@@ -269,7 +269,7 @@
 				it( "deletes a cached image where the source no longer exists", function() {
 					var cacheFilePath = createCachedFile( 320, ai, "nonexistantsource.jpg" );
 					expect( FileExists( cacheFilePath ) ).toBeTrue();
-					ai.cleanupCacheFolders( imageFolderPath );
+					ai.cleanupCacheFolders( imageFolderUrl );
 					expect( FileExists( cacheFilePath ) ).toBeFalse();
 					// deletes empty resolution cache folders
 					expect( DirectoryExists( GetDirectoryFromPath( cacheFilePath ) ) ).toBeFalse();
@@ -279,7 +279,7 @@
 					variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
 					var cacheFilePath = createCachedFile( 320, ai, "nonexistantsource.jpg" );
 					expect( FileExists( cacheFilePath ) ).toBeTrue();
-					ai.cleanupCacheFolders( imageFolderPath );
+					ai.cleanupCacheFolders( imageFolderUrl );
 					expect( FileExists( cacheFilePath ) ).toBeFalse();
 					// deletes empty resolution cache folders
 					expect( DirectoryExists( GetDirectoryFromPath( cacheFilePath ) ) ).toBeFalse();
@@ -336,7 +336,7 @@
 		return path.Replace( "\", "/", "ALL" );
 	}
 
-	string function createCachedFile( required numeric resolution, required ai, filename: imageFilename  ){
+	string function createCachedFile( required numeric resolution, required ai, filename = imageFilename  ){
 		makePublic( ai, "resolutionFolderName" );
 		var filePath = imageFolderPath & ai.resolutionFolderName( resolution ) & "/" & filename;
 		createFile( filePath );

@@ -4,16 +4,16 @@ component{
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
-		,boolean cacheFileOperations: true // cache source file paths and file existence tests to avoid unnecessary disk access
-		,boolean checkForFileUpdates: false // ensures updated source images are re-cached, but requires disk access on every request
-		,string cacheFolderName: "" // sub-folder in which to store the resized images
-		,numeric browserCacheSeconds: 2592000 // how long the BROWSER cache should last (30 days by default)
-		,numeric pixelDensityMultiplier: 1.5 // by how much to multiply the resolution for "retina" displays. Number between 1 and 3
-		,numeric jpgQuality: 50 // the quality of any generated JPGs on a scale of 1 to 100
-		,boolean sharpen: true // Shrinking images can blur details, perform a sharpen on re-scaled images?
-		,string interpolation: "highPerformance" // interpolation algorithm to use when scaling/resizing file
-		,boolean writeLogs: false // whether or not to log activity - don't use in production
-		,string logFilename: "adaptive-images" // name of logfile
+		,boolean cacheFileOperations = true // cache source file paths and file existence tests to avoid unnecessary disk access
+		,boolean checkForFileUpdates = false // ensures updated source images are re-cached, but requires disk access on every request
+		,string cacheFolderName = "" // sub-folder in which to store the resized images
+		,numeric browserCacheSeconds = 2592000 // how long the BROWSER cache should last (30 days by default)
+		,numeric pixelDensityMultiplier = 1.5 // by how much to multiply the resolution for "retina" displays. Number between 1 and 3
+		,numeric jpgQuality = 50 // the quality of any generated JPGs on a scale of 1 to 100
+		,boolean sharpen = true // Shrinking images can blur details, perform a sharpen on re-scaled images?
+		,string interpolation = "highPerformance" // interpolation algorithm to use when scaling/resizing file
+		,boolean writeLogs = false // whether or not to log activity - don't use in production
+		,string logFilename = "adaptive-images" // name of logfile
 	)
 	{	
 		variables.config = arguments;
@@ -148,7 +148,7 @@ component{
 			throw( type: exceptionType, message: "The pixelDensityMultiplier argument must be between 1 and 100" );
 	}
 
-	private void function checkCachedImageIsNotLargerThanSource( required string cachedFilePath,required string sourceFilePath ){
+	private void function checkCachedImageIsNotLargerThanSource( required string cachedFilePath, required string sourceFilePath ){
 		cachedFileSize = GetFileInfo( cachedFilePath ).size;
 		sourceFileSize = GetFileInfo( sourceFilePath ).size;
 		if( cachedFileSize GT sourceFileSize ){
@@ -166,7 +166,7 @@ component{
 		return newImage;
 	}
 
-	private boolean function isMobile( required string userAgent: cgi.HTTP_USER_AGENT ){
+	private boolean function isMobile( required string userAgent = cgi.HTTP_USER_AGENT ){
 		return FindNoCase( "mobile", userAgent );
 	}
 
@@ -303,12 +303,12 @@ component{
 		throw( type: "AdaptiveImages.invalidFileExtension", message: "The file requested has an invalid file extension: '#requestedFileExtension#'." )
 	}
 
-	private void function _log( required string text, string file: config.logFilename ){
+	private void function _log( required string text, string file = config.logFilename ){
 		if( config.writeLogs )
 			WriteLog( file: "#file#", text: "#text#" )	
 	}
 
-	private void function sendImage( required string filepath, required string mimeType, browserCacheSeconds: config.browserCacheSeconds ){
+	private void function sendImage( required string filepath, required string mimeType, browserCacheSeconds = config.browserCacheSeconds ){
 		cfheader( name: "Content-type", value: mimeType );
 		if( IsNumeric( browserCacheSeconds ) )
 			cfheader( name: "Cache-Control", value: "private,max-age=#browserCacheSeconds#" );
