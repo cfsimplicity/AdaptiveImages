@@ -252,7 +252,7 @@
 				deleteFolder( cacheFolderPath );
 			} );
 
-			it( "caches and sends an image sized to the detected resolution if not already in cache, using optional cache folder name ", function() {
+			it( "caches and sends an image sized to the detected resolution if not already in cache, using optional cache folder name", function() {
 				variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
 				prepareMock( ai );
 				ai.$property( propertyName: "sendImage", mock: sendImage );
@@ -263,6 +263,30 @@
 				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
 				deleteFolder( imageFolderPath & "ai-cache/" );
 			} );
+
+			describe( "cleanupCacheFolders", function(){
+
+				it( "deletes a cached image where the source no longer exists", function() {
+					var cacheFilePath = createCachedFile( 320, ai, "nonexistantsource.jpg" );
+					expect( FileExists( cacheFilePath ) ).toBeTrue();
+					ai.cleanupCacheFolders( imageFolderPath );
+					expect( FileExists( cacheFilePath ) ).toBeFalse();
+					// deletes empty resolution cache folders
+					expect( DirectoryExists( GetDirectoryFromPath( cacheFilePath ) ) ).toBeFalse();
+				} );
+
+				it( "deletes a cached image where the source no longer exists using optional cache folder name", function() {
+					variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], cacheFolderName: "ai-cache" );
+					var cacheFilePath = createCachedFile( 320, ai, "nonexistantsource.jpg" );
+					expect( FileExists( cacheFilePath ) ).toBeTrue();
+					ai.cleanupCacheFolders( imageFolderPath );
+					expect( FileExists( cacheFilePath ) ).toBeFalse();
+					// deletes empty resolution cache folders
+					expect( DirectoryExists( GetDirectoryFromPath( cacheFilePath ) ) ).toBeFalse();
+					deleteFolder( imageFolderPath & "ai-cache/" );
+				} );
+
+			});
 
 		});
 
@@ -284,9 +308,9 @@
 		return path.Replace( "\", "/", "ALL" );
 	}
 
-	string function createCachedFile( required numeric resolution, required ai  ){
+	string function createCachedFile( required numeric resolution, required ai, filename: imageFilename  ){
 		makePublic( ai, "resolutionFolderName" );
-		var filePath = imageFolderPath & ai.resolutionFolderName( resolution ) & "/" & imageFilename;
+		var filePath = imageFolderPath & ai.resolutionFolderName( resolution ) & "/" & filename;
 		createFile( filePath );
 		return filePath;
 	}
@@ -295,9 +319,8 @@
 		var folderPath = GetDirectoryFromPath( path );
 		if( !DirectoryExists( folderPath ) )
 			DirectoryCreate( folderPath );
-		if( !FileExists( path ) ){
+		if( !FileExists( path ) )
 			FileWrite( path, "test" );
-		}
 	}
 
 	void function deleteFolder( path ){

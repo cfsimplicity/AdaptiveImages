@@ -120,10 +120,17 @@ component{
 			if( !DirectoryExists( resolutionFolderPath ) )
 				continue;
 			cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
-			for( var image in cachedImages ){
-				if( !ArrayFindNoCase( sourceFiles, image ) )
-					FileDelete( resolutionFolderPath & image );
+			if( ArrayLen( cachedImages ) ){
+				for( var image in cachedImages ){
+					if( !ArrayFindNoCase( sourceFiles, image ) )
+						FileDelete( resolutionFolderPath & image );
+				}
+				// See if there are any images left
+				cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			}
+			// Delete empty resolution folders
+			if( !ArrayLen( cachedImages ) )
+				DirectoryDelete( resolutionFolderPath );
 		}
 	}
 
