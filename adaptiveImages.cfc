@@ -313,7 +313,7 @@ component{
 		if( IsNumeric( browserCacheSeconds ) )
 			cfheader( name: "Cache-Control", value: "private,max-age=#browserCacheSeconds#" );
 		var fileInfo = GetFileInfo( filepath );
-		cfheader( name="Content-Length", value: fileInfo.size );
+		cfheader( name: "Content-Length", value: fileInfo.size );
 		cfcontent( file: filepath, type: mimeType );
 		abort;
 	}
