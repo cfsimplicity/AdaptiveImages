@@ -36,10 +36,10 @@ application.adaptiveImages = New adaptiveImages( resolutions: [ 320, 480, 768, 1
 ```
 <cfscript>
 try{
-	application.adaptiveImages.process( cgi.HTTP_X_ORIGINAL_URL );
+ application.adaptiveImages.process( cgi.HTTP_X_ORIGINAL_URL );
 }
 catch( any exception ){
-	abort;
+ abort;
 }
 </cfscript>
 ```
@@ -67,7 +67,7 @@ document.cookie='resolution='+Math.max(screen.width,screen.height)+("devicePixel
 </script>
 ```
 
-##Configuration options
+## Configuration options
 You can pass these arguments when instantiating AdaptiveImages.cfc:
  - `resolutions` *required*. An array of the device widths you wish to support, in pixels and in any order.
  - `cacheFileOperations` boolean: default=true. Whether to cache source file paths and file existence tests to avoid unnecessary disk access. You will normally want to keep this enabled unless your source files change very frequently and you are not using the cache maintenance functions, or you are memory-constrained and have a lot of files (but note that only the *paths* are stored, not the images themselves).
@@ -88,14 +88,14 @@ For best performance keep the `checkForFileUpdates` option disabled. If you need
 Use the `cleanupCacheFolders( sourceImageFolder )` method periodically to remove any cached files where the source image no longer exists. Currently this function is not recursive, so needs to be applied separately to each parent source image folder containing cached image folders.
 
 ## Test Suite
-Tests require [TestBox 2.1](https://github.com/Ortus-Solutions/TestBox). You will need to create an application mapping for `/testbox`.
+Tests require [TestBox 2.1](https://github.com/Ortus-Solutions/TestBox) or later. You will need to create an application mapping for `/testbox`.
 
 ## Legal
 The original Adaptive Images by Matt Wilcox is licensed under a [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/)
 
 This port is licensed under an MIT license
 
-###The MIT License (MIT)
+### The MIT License (MIT)
 
 Copyright (c) 2017 Julian Halliwell
 
