@@ -63,9 +63,16 @@ catch( any exception ){
 4) Add the following javascript to the HTML `<head>` of all of your web pages to detect and store the client device's resolution/pixel density.
 ```
 <script>
-document.cookie='resolution='+Math.max(screen.width,screen.height)+("devicePixelRatio" in window ? ","+devicePixelRatio : ",1")+'; path=/';
+document.cookie='resolution='+Math.max(screen.width,screen.height)+'-'+("devicePixelRatio" in window? devicePixelRatio: 1)+'; path=/';
 </script>
 ```
+If you are using HTTPS then you should add the `secure` attribute:
+```
+<script>
+document.cookie='resolution='+Math.max(screen.width,screen.height)+'-'+("devicePixelRatio" in window? devicePixelRatio: 1)+'; path=/; secure';
+</script>
+```
+Note: unlike the orginal Adaptive Images implementation, the screen width and pixel ration values are separated by a **hyphen** not a comma, since it appears that cookie values set by javascript and containing commas are not always read by the server. 
 
 ## Configuration options
 You can pass these arguments when instantiating AdaptiveImages.cfc:
