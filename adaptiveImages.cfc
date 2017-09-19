@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.0.0";
+	variables.version = "2.0.1";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -20,7 +20,7 @@ component{
 		config.cacheFolderName = Trim( cacheFolderName ); //ensure it's a string
 		variables.hasCacheFolderName = config.cacheFolderName.Len();
 		validateConfig( config );
-		ArraySort( config.resolutions, "numeric","asc" );// smallest to largest
+		ArraySort( config.resolutions, "numeric", "asc" );// smallest to largest
 		config.smallestResolution = config.resolutions[ 1 ];
 		config.largestResolution = config.resolutions[ ArrayLen( config.resolutions ) ];
 		variables.fileOperationsCache = {};
@@ -104,8 +104,11 @@ component{
 		var sourceFolderPath = GetDirectoryFromPath( imageFullPath );
 		for( var resolution in config.resolutions ){
 			var cachedFile	=	sourceFolderPath & resolutionFolderName( resolution ) & "/" & GetFileFromPath( imageFullPath );
-			if( FileExists( cachedFile ) )
-				FileDelete( cachedFile );
+			if( FileExists( cachedFile ) ){
+				lock name=cachedFile timeout=5 {
+					FileDelete( cachedFile );
+				}
+			}
 		}
 		clearFileOperationsCache();
 	}
@@ -122,15 +125,22 @@ component{
 			cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			if( ArrayLen( cachedImages ) ){
 				for( var image in cachedImages ){
-					if( !ArrayFindNoCase( sourceFiles, image ) )
-						FileDelete( resolutionFolderPath & image );
+					if( !ArrayFindNoCase( sourceFiles, image ) ){
+						var imagePath = resolutionFolderPath & image;
+						lock name=imagePath timeout=5 {
+							FileDelete( imagePath );
+						}
+					}
 				}
 				// See if there are any images left
 				cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			}
 			// Delete empty resolution folders
-			if( !ArrayLen( cachedImages ) )
-				DirectoryDelete( resolutionFolderPath );
+			if( !ArrayLen( cachedImages ) ){
+				lock name=resolutionFolderPath timeout=5 {
+					DirectoryDelete( resolutionFolderPath );
+				}
+			}
 		}
 	}
 
@@ -171,7 +181,7 @@ component{
 	}
 
 	private boolean function cookieIsValid(){
-		return REFind( "^[0-9]+,[0-9\.]+$", cookie.resolution );
+		return REFind( "^[0-9]+[,-][0-9\.]+$", cookie.resolution );
 	}
 
 	/* Send different defaults to mobile and desktop */
@@ -190,7 +200,7 @@ component{
 			return defaultResolution();
 		}	
 		_log( "AI: Cookie.resolution=#cookie.resolution#" );
-		var cookieData = ListToArray( cookie.resolution );
+		var cookieData = ListToArray( cookie.resolution, ",-" );// Hyphen more reliable, but allow either separator
 		var clientWidth = cookieData[ 1 ];
 		var	clientPixelDensity = cookieData[ 2 ];
 		var maxImageWidth = clientWidth;
