@@ -1,8 +1,8 @@
 ## 2.0.1 - 19 September 2017
 - Fixes
-		- \#4 Tomcat appears not to be able to read javascript set cookies containing commas
-		- Cached folder cleanup not working properly in tests under ACF11
-		- Add locking around file/directory deletion operations
+	- \#4 Tomcat appears not to be able to read javascript set cookies containing commas
+	- Cached folder cleanup not working properly in tests under ACF11
+	- Add locking around file/directory deletion operations
 
 ## 2.0.0 - 8 September 2017
 - Enhancements
