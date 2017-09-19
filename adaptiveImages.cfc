@@ -20,7 +20,7 @@ component{
 		config.cacheFolderName = Trim( cacheFolderName ); //ensure it's a string
 		variables.hasCacheFolderName = config.cacheFolderName.Len();
 		validateConfig( config );
-		ArraySort( config.resolutions, "numeric","asc" );// smallest to largest
+		ArraySort( config.resolutions, "numeric", "asc" );// smallest to largest
 		config.smallestResolution = config.resolutions[ 1 ];
 		config.largestResolution = config.resolutions[ ArrayLen( config.resolutions ) ];
 		variables.fileOperationsCache = {};
@@ -171,7 +171,7 @@ component{
 	}
 
 	private boolean function cookieIsValid(){
-		return REFind( "^[0-9]+,[0-9\.]+$", cookie.resolution );
+		return REFind( "^[0-9]+[,-][0-9\.]+$", cookie.resolution );
 	}
 
 	/* Send different defaults to mobile and desktop */
@@ -190,7 +190,7 @@ component{
 			return defaultResolution();
 		}	
 		_log( "AI: Cookie.resolution=#cookie.resolution#" );
-		var cookieData = ListToArray( cookie.resolution );
+		var cookieData = ListToArray( cookie.resolution, ",-" );// Hyphen more reliable, but allow either separator
 		var clientWidth = cookieData[ 1 ];
 		var	clientPixelDensity = cookieData[ 2 ];
 		var maxImageWidth = clientWidth;

@@ -100,19 +100,14 @@
 				expect( ai.isMobile( "Mozilla/5.0 (Windows NT 6.1; rv:23.0) Gecko/20100101 Firefox/23.0 " ) ).toBeFalse();
 				expect( ai.isMobile( "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)" ) ).toBeTrue();
 			});
-
-			it( "can set the resolution cookie", function() {
-				setResolutionCookie( "480,0" );
-				expect( cookie ).toHaveKey( "resolution" );
-			} );
 			
 			it( "can validate the resolution cookie", function() {
 				makePublic( ai, "cookieIsValid" );
-				var validValue = "480,0";
-				var invalidValue = "abc";
-				setResolutionCookie( validValue );
+				setResolutionCookie( "480,0" );
 				expect( ai.cookieIsValid() ).toBeTrue();
-				setResolutionCookie( invalidValue );
+				setResolutionCookie( "480-0" );
+				expect( ai.cookieIsValid() ).toBeTrue();
+				setResolutionCookie( "abc" );
 				expect( ai.cookieIsValid() ).toBeFalse();
 			} );
 
@@ -140,34 +135,34 @@
 			it( "sets resolution as detected value if result is higher than largest defined", function() {
 				variables.ai = New root.adaptiveImages( resolutions: [ 320, 480 ], pixelDensityMultiplier: 1.5 );
 				makePublic( ai, "resolution" );
-				setResolutionCookie( "500,1" );//non-retina
+				setResolutionCookie( "500-1" );//non-retina
 				expect( ai.resolution() ).toBe( 500 );// client width is bigger than largest defined
 			} );
 
 			it( "sets resolution as next largest if detected value is lower than largest defined", function() {
 				variables.ai = New root.adaptiveImages( resolutions: [ 320, 480, 1024 ], pixelDensityMultiplier: 1.5 );
 				makePublic( ai, "resolution" );
-				setResolutionCookie( "300,1" );
+				setResolutionCookie( "300-1" );
 				expect( ai.resolution() ).toBe( 320 );// retina resolution is 450. Expect next highest defined
 			} );
 
 			it( "sets resolution as computed value if retina detected and result is higher than largest defined", function() {
 				variables.ai = New root.adaptiveImages( resolutions: [ 320, 480 ], pixelDensityMultiplier: 1.5 );
 				makePublic( ai, "resolution" );
-				setResolutionCookie( "500,2" );// set as retina display so multiplier is applied
+				setResolutionCookie( "500-2" );// set as retina display so multiplier is applied
 				expect( ai.resolution() ).toBe( 750 );//multiplier is 1.5 so 500x1.5. Bigger than largest defined
 			} );
 
 			it( "sets resolution as next largest if retina detected and computed value is lower than largest defined", function() {
 				variables.ai = New root.adaptiveImages( resolutions: [ 320, 480, 1024 ], pixelDensityMultiplier: 1.5 );
 				makePublic( ai, "resolution" );
-				setResolutionCookie( "300,2" );// set as retina display so multiplier is applied
+				setResolutionCookie( "300-2" );// set as retina display so multiplier is applied
 				expect( ai.resolution() ).toBe( 480 );// retina resolution is 450. Expect next highest defined
 			} );
 
 			it( "returns the source image if the detected resolution exceeds the largest defined", function() {
 				ai.$property( propertyName: "sendImage", mock: sendImage );
-				setResolutionCookie( "500,1" );
+				setResolutionCookie( "500-1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( sourceImagePath );
 			} );
 
@@ -185,7 +180,7 @@
 				ai[ "setFileOperationsCacheValue" ] = setFileOperationsCacheValue; // add this temporary method
 				var cacheFilePath = createCachedFile( 320, ai );
 				ai.setFileOperationsCacheValue( cacheFilePath, true );
-				setResolutionCookie( "300,1" );
+				setResolutionCookie( "300-1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
 				deleteFolder( GetDirectoryFromPath( cacheFilePath ) );
 			} );
@@ -193,7 +188,7 @@
 			it( "sends source image if resolution exceeds source width", function() {
 				ai.$property( propertyName: "sendImage", mock: sendImage );
 				// test image is 600px wide
-				setResolutionCookie( "700,1" );
+				setResolutionCookie( "700-1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( sourceImagePath );
 			} );
 
@@ -247,7 +242,7 @@
 				var cacheFolderPath = imageFolderPath & 320 & "/";
 				var cacheFilePath = cacheFolderPath & "test.jpg";
 				deleteFolder( cacheFolderPath );//ensure it doesn't exist.
-				setResolutionCookie( "300,1" );
+				setResolutionCookie( "300-1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
 				deleteFolder( cacheFolderPath );
 			} );
@@ -259,7 +254,7 @@
 				var cacheFolderPath = imageFolderPath & "ai-cache/" & 320 & "/";
 				var cacheFilePath = cacheFolderPath & "test.jpg";
 				deleteFolder( cacheFolderPath );//ensure it doesn't exist.
-				setResolutionCookie( "300,1" );
+				setResolutionCookie( "300-1" );
 				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
 				deleteFolder( imageFolderPath & "ai-cache/" );
 			} );
