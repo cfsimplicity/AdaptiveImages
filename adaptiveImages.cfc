@@ -104,8 +104,11 @@ component{
 		var sourceFolderPath = GetDirectoryFromPath( imageFullPath );
 		for( var resolution in config.resolutions ){
 			var cachedFile	=	sourceFolderPath & resolutionFolderName( resolution ) & "/" & GetFileFromPath( imageFullPath );
-			if( FileExists( cachedFile ) )
-				FileDelete( cachedFile );
+			if( FileExists( cachedFile ) ){
+				lock name=cachedFile timeout=5 {
+					FileDelete( cachedFile );
+				}
+			}
 		}
 		clearFileOperationsCache();
 	}
@@ -122,15 +125,22 @@ component{
 			cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			if( ArrayLen( cachedImages ) ){
 				for( var image in cachedImages ){
-					if( !ArrayFindNoCase( sourceFiles, image ) )
-						FileDelete( resolutionFolderPath & image );
+					if( !ArrayFindNoCase( sourceFiles, image ) ){
+						var imagePath = resolutionFolderPath & image;
+						lock name=imagePath timeout=5 {
+							FileDelete( imagePath );
+						}
+					}
 				}
 				// See if there are any images left
 				cachedImages = DirectoryList( resolutionFolderPath, false, "name" );
 			}
 			// Delete empty resolution folders
-			if( !ArrayLen( cachedImages ) )
-				DirectoryDelete( resolutionFolderPath );
+			if( !ArrayLen( cachedImages ) ){
+				lock name=resolutionFolderPath timeout=5 {
+					DirectoryDelete( resolutionFolderPath );
+				}
+			}
 		}
 	}
 
