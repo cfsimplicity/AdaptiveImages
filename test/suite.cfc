@@ -293,7 +293,7 @@
 					ai.deleteCachedCopies( sourceImagePath );
 					expect( FileExists( cacheFilePath1 ) ).toBeFalse();
 					expect( FileExists( cacheFilePath2 ) ).toBeFalse();
-					ai.cleanupCacheFolders( imageFolderPath );
+					ai.cleanupCacheFolders( imageFolderUrl );
 				} );
 
 				it( "deletes cached resolution images for a given image using optional cache folder name", function() {
@@ -305,7 +305,7 @@
 					ai.deleteCachedCopies( sourceImagePath );
 					expect( FileExists( cacheFilePath1 ) ).toBeFalse();
 					expect( FileExists( cacheFilePath2 ) ).toBeFalse();
-					ai.cleanupCacheFolders( imageFolderPath );
+					ai.cleanupCacheFolders( imageFolderUrl );
 					deleteFolder( imageFolderPath & "ai-cache/" );
 				} );
 
@@ -340,15 +340,21 @@
 
 	void function createFile( path ){
 		var folderPath = GetDirectoryFromPath( path );
-		if( !DirectoryExists( folderPath ) )
-			DirectoryCreate( folderPath );
+		if( !DirectoryExists( folderPath ) ){
+			lock name=folderPath timeout=5{
+				DirectoryCreate( folderPath );
+			}
+		}
 		if( !FileExists( path ) )
 			FileWrite( path, "test" );
 	}
 
 	void function deleteFolder( path ){
-		if( DirectoryExists( path ) )
-			DirectoryDelete( path, true );
+		if( DirectoryExists( path ) ){
+			lock name=path timeout=5{
+				DirectoryDelete( path, true );
+			}
+		}
 	}
 
 	void function setResolutionCookie( required string value ){
