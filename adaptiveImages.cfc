@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.0.1";
+	variables.version = "2.0.1-develop";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -310,12 +310,12 @@ component{
 			case "jpg": case "jpeg": case "jpe":
 				return "image/jpeg";
 		}
-		throw( type: "AdaptiveImages.invalidFileExtension", message: "The file requested has an invalid file extension: '#requestedFileExtension#'." )
+		throw( type: "AdaptiveImages.invalidFileExtension", message: "The file requested has an invalid file extension: '#requestedFileExtension#'." );
 	}
 
 	private void function _log( required string text, string file = config.logFilename ){
 		if( config.writeLogs )
-			WriteLog( file: "#file#", text: "#text#" )	
+			WriteLog( file: "#file#", text: "#text#" );
 	}
 
 	private void function sendImage( required string filepath, required string mimeType, browserCacheSeconds = config.browserCacheSeconds ){
