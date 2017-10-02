@@ -28,13 +28,18 @@ component{
 		return this;
 	}
 
+	private string function cleanupUrl( required string originalUrl ){
+		// remove any query string
+		return ListFirst( UrlDecode( originalUrl ), "?" );
+	}
+
 	/* The main public method to serve images */
 	/* Pass in the original requested URL as supplied by the URL Rewrite engine. For IIS this is cgi.HTTP_X_ORIGINAL_URL */
 	public function process( required string originalUrl ){
 		try{
-			var requestedFileUri = UrlDecode( originalUrl );
-			var requestedFilename = parseFilenameFromUrl( originalUrl );
-			var	sourceFilePath = getSourceFilePath( requestedFileUri );
+			var requestedFileUri = cleanupUrl( originalUrl );
+			var requestedFilename = ListLast( requestedFileUri, "/" );
+			var sourceFilePath = getSourceFilePath( requestedFileUri );
 			var sourceFolderPath = GetDirectoryFromPath( sourceFilePath );
 			var requestedFileExtension = ListLast( requestedFilename, "." );
 			_log( "AI: Request for: #requestedFileUri# which translates to #sourceFilePath#" );
@@ -229,11 +234,6 @@ component{
 	}
 
 	/* File/folder functions */
-
-	private string function parseFilenameFromUrl( required string originalUrl ){
-		// remove any query string
-		return ListFirst( ListLast( originalUrl, "/" ), "?" );
-	}
 
 	// Always use forward slashes for consistency
 	private string function forwardSlashes( required string path ){
