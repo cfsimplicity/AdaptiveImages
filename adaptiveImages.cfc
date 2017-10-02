@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.0.1-develop";
+	variables.version = "2.1.0-develop";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
