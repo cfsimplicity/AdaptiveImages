@@ -28,11 +28,6 @@ component{
 		return this;
 	}
 
-	private string function cleanupUrl( required string originalUrl ){
-		// remove any query string
-		return ListFirst( UrlDecode( originalUrl ), "?" );
-	}
-
 	/* The main public method to serve images */
 	/* Pass in the original requested URL as supplied by the URL Rewrite engine. For IIS this is cgi.HTTP_X_ORIGINAL_URL */
 	public function process( required string originalUrl ){
@@ -238,6 +233,11 @@ component{
 	// Always use forward slashes for consistency
 	private string function forwardSlashes( required string path ){
 		return path.Replace( "\", "/", "ALL" );
+	}
+
+	private string function cleanupUrl( required string originalUrl ){
+		// remove any query string
+		return ListFirst( UrlDecode( originalUrl ), "?" );
 	}
 
 	private string function getSourceFilePath( required string fileUri ){
