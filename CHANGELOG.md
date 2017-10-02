@@ -1,3 +1,9 @@
+## 2.1.2 - 2 October 2017
+- Enhancements
+	- \#5 Add option to log errors only
+- Fixes
+	- \#6 Query strings in original URL causes errors.
+
 ## 2.0.1 - 19 September 2017
 - Fixes
 	- \#4 Tomcat appears not to be able to read javascript set cookies containing commas
