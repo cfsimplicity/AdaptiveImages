@@ -14,6 +14,7 @@ component{
 		,string interpolation = "highPerformance" // interpolation algorithm to use when scaling/resizing file
 		,boolean writeLogs = false // whether or not to log activity - don't use in production
 		,string logFilename = "adaptive-images" // name of logfile
+		,boolean logErrors = arguments.writeLogs //with writeLogs false, just log errors from the process() method
 	)
 	{	
 		variables.config = arguments;
@@ -74,7 +75,8 @@ component{
 			return sendImage( cachedFilePath, mimeType );
 		}
 		catch( any exception ){
-			_log( "AI: Error Occured : #exception.message#" );
+			if( config.logErrors OR config.writeLogs )
+				WriteLog( file: config.logFilename, text: "AI: Error Occured : #exception.message#" );
 			cfheader( statuscode: "503", statustext: "Temporary problem" );
 			abort;
 		}
@@ -238,7 +240,7 @@ component{
 		if( !config.cacheFileOperations )
 			return filePath;
 		var cacheKey = fileUri.REReplace( "^/", "" );// CF vars can't begin with a slash
-		if( StructKeyExists( fileOperationsCache,cacheKey ) ){
+		if( StructKeyExists( fileOperationsCache, cacheKey ) ){
 			_log( "AI: Using cached source file path" );
 			return fileOperationsCache[ cacheKey ].path;
 		}
