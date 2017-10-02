@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.1.0";
+	variables.version = "2.1.0-develop";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -33,7 +33,7 @@ component{
 	public function process( required string originalUrl ){
 		try{
 			var requestedFileUri = UrlDecode( originalUrl );
-			var requestedFilename = ListLast( requestedFileUri, "/" );
+			var requestedFilename = parseFilenameFromUrl( originalUrl );
 			var	sourceFilePath = getSourceFilePath( requestedFileUri );
 			var sourceFolderPath = GetDirectoryFromPath( sourceFilePath );
 			var requestedFileExtension = ListLast( requestedFilename, "." );
@@ -229,6 +229,11 @@ component{
 	}
 
 	/* File/folder functions */
+
+	private string function parseFilenameFromUrl( required string originalUrl ){
+		// remove any query string
+		return ListFirst( ListLast( originalUrl, "/" ), "?" );
+	}
 
 	// Always use forward slashes for consistency
 	private string function forwardSlashes( required string path ){

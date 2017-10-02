@@ -88,6 +88,11 @@
 				expect( ai.mimeType( "png" ) ).toBe( "image/png" );
 			} );
 
+			it( "strips off query strings from original url", function() {
+				makePublic( ai, "parseFilenameFromUrl" );
+				expect( ai.parseFilenameFromUrl( "/images/test.jpg?test=1" ) ).toBe( "test.jpg" );
+			} );
+
 			it( "throws an exception if file extension is invalid", function() {
 				makePublic( ai, "mimeType" );
 				expect( function(){
