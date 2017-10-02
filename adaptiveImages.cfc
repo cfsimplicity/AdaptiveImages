@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.1.1";
+	variables.version = "2.1.1-develop";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -32,9 +32,9 @@ component{
 	/* Pass in the original requested URL as supplied by the URL Rewrite engine. For IIS this is cgi.HTTP_X_ORIGINAL_URL */
 	public function process( required string originalUrl ){
 		try{
-			var requestedFileUri = UrlDecode( originalUrl );
-			var requestedFilename = parseFilenameFromUrl( originalUrl );
-			var	sourceFilePath = getSourceFilePath( requestedFileUri );
+			var requestedFileUri = cleanupUrl( originalUrl );
+			var requestedFilename = ListLast( requestedFileUri, "/" );
+			var sourceFilePath = getSourceFilePath( requestedFileUri );
 			var sourceFolderPath = GetDirectoryFromPath( sourceFilePath );
 			var requestedFileExtension = ListLast( requestedFilename, "." );
 			_log( "AI: Request for: #requestedFileUri# which translates to #sourceFilePath#" );
@@ -230,14 +230,14 @@ component{
 
 	/* File/folder functions */
 
-	private string function parseFilenameFromUrl( required string originalUrl ){
-		// remove any query string
-		return ListFirst( ListLast( originalUrl, "/" ), "?" );
-	}
-
 	// Always use forward slashes for consistency
 	private string function forwardSlashes( required string path ){
 		return path.Replace( "\", "/", "ALL" );
+	}
+
+	private string function cleanupUrl( required string originalUrl ){
+		// remove any query string
+		return ListFirst( UrlDecode( originalUrl ), "?" );
 	}
 
 	private string function getSourceFilePath( required string fileUri ){
