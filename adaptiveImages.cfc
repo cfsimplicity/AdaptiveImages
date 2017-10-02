@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.0.1";
+	variables.version = "2.0.1-develop";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -14,6 +14,7 @@ component{
 		,string interpolation = "highPerformance" // interpolation algorithm to use when scaling/resizing file
 		,boolean writeLogs = false // whether or not to log activity - don't use in production
 		,string logFilename = "adaptive-images" // name of logfile
+		,boolean logErrors = arguments.writeLogs //with writeLogs false, just log errors from the process() method
 	)
 	{	
 		variables.config = arguments;
@@ -74,7 +75,8 @@ component{
 			return sendImage( cachedFilePath, mimeType );
 		}
 		catch( any exception ){
-			_log( "AI: Error Occured : #exception.message#" );
+			if( config.logErrors OR config.writeLogs )
+				WriteLog( file: config.logFilename, text: "AI: Error Occured : #exception.message#" );
 			cfheader( statuscode: "503", statustext: "Temporary problem" );
 			abort;
 		}
@@ -238,7 +240,7 @@ component{
 		if( !config.cacheFileOperations )
 			return filePath;
 		var cacheKey = fileUri.REReplace( "^/", "" );// CF vars can't begin with a slash
-		if( StructKeyExists( fileOperationsCache,cacheKey ) ){
+		if( StructKeyExists( fileOperationsCache, cacheKey ) ){
 			_log( "AI: Using cached source file path" );
 			return fileOperationsCache[ cacheKey ].path;
 		}
@@ -310,12 +312,12 @@ component{
 			case "jpg": case "jpeg": case "jpe":
 				return "image/jpeg";
 		}
-		throw( type: "AdaptiveImages.invalidFileExtension", message: "The file requested has an invalid file extension: '#requestedFileExtension#'." )
+		throw( type: "AdaptiveImages.invalidFileExtension", message: "The file requested has an invalid file extension: '#requestedFileExtension#'." );
 	}
 
 	private void function _log( required string text, string file = config.logFilename ){
 		if( config.writeLogs )
-			WriteLog( file: "#file#", text: "#text#" )	
+			WriteLog( file: "#file#", text: "#text#" );
 	}
 
 	private void function sendImage( required string filepath, required string mimeType, browserCacheSeconds = config.browserCacheSeconds ){
