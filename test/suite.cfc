@@ -264,6 +264,23 @@
 				deleteFolder( imageFolderPath & "ai-cache/" );
 			} );
 
+			it( "clears the file operations cache if it contains a cached image which no longer exists on the file system", function(){
+				variables.ai = New root.adaptiveImages( resolutions: [ "480","320" ], writeLogs: true );
+				prepareMock( ai );
+				ai.$property( propertyName: "sendImage", mock: sendImage );
+				var cacheFolderPath = imageFolderPath & 320 & "/";
+				var cacheFilePath = cacheFolderPath & "test.jpg";
+				setResolutionCookie( "300-1" );
+				ai.process( sourceImageUrl );
+				var cache = ai.getFileOperationsCache();
+				expect( cache ).toHaveKey( cacheFolderPath );
+				deleteFolder( cacheFolderPath );
+				ai.process( sourceImageUrl );
+				expect( cache ).toBeEmpty();
+				expect( ai.process( sourceImageUrl ) ).toBe( cacheFilePath );
+				deleteFolder( cacheFolderPath );
+			} );
+
 			describe( "cleanupCacheFolders", function(){
 
 				it( "deletes a cached image where the source no longer exists", function() {
@@ -327,6 +344,8 @@
 	}
 
 	string function sendImage( required string filepath ){
+		// simulate reading the file
+		//ImageRead( filepath );
 		//can't test actual sending, so just return the selected image path
 		return filepath;
 	}

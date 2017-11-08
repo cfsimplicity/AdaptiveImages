@@ -87,7 +87,7 @@ You can pass these arguments when instantiating AdaptiveImages.cfc:
  - `interpolation` string: default="highPerformance". Interpolation algorithm to use when scaling/resizing file (depending on whether performance or quality is paramount).
  - `writeLogs` boolean: default=false. Whether or not to log activity - don't use in production.
  - `logFilename`: string: default="adaptive-images". If logging, the name of the file.
- - `logErrors`: boolean: default=[writeLogs value]. If `writeLogs` is false, allow just errors in processing to be logged
+ - `logErrors`: boolean: default=[writeLogs value]. If `writeLogs` is false, allow just errors in processing to be logged.
 
 ## Updating source files
 For best performance keep the `checkForFileUpdates` option disabled. If you need to update or delete a source image, call the `deleteCachedCopies( fullImagePath )` method from your update/delete code passing in the full path of the image file.

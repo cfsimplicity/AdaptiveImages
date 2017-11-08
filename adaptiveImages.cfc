@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.1.2";
+	variables.version = "2.1.3";
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -75,10 +75,17 @@ component{
 			return sendImage( cachedFilePath, mimeType );
 		}
 		catch( any exception ){
-			if( config.logErrors OR config.writeLogs )
-				WriteLog( file: config.logFilename, text: "AI: Error Occured : #exception.message#" );
-			cfheader( statuscode: "503", statustext: "Temporary problem" );
-			abort;
+			if( !DirectoryExists( cacheFolderPath ) OR !FileExists( cachedFilePath ) ){
+				if( config.logErrors OR config.writeLogs )
+					WriteLog( file: config.logFilename, text: "AI: Error Occured : cached image should exist according to FO cache but is missing. Clearing FO cache." );
+				clearFileOperationsCache();
+			}
+			else {
+				if( config.logErrors OR config.writeLogs )
+					WriteLog( file: config.logFilename, text: "AI: Error Occured : #exception.message#" );
+				cfheader( statuscode: "503", statustext: "Temporary problem" );
+				abort;
+			}
 		}
 	}
 

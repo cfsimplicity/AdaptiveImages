@@ -1,3 +1,6 @@
+## 2.1.3 - 8 November 2017
+- \#7 Handle errors caused by file system being out of sync with file operations cache
+
 ## 2.1.2 - 2 October 2017
 - Enhancements
 	- \#5 Add option to log errors only
