@@ -1,3 +1,6 @@
+## 2.1.4 - 9 October 2019
+- \#8 Replace GetFileInfo() with faster FileInfo() if using Lucee
+
 ## 2.1.3 - 8 November 2017
 - \#7 Handle errors caused by file system being out of sync with file operations cache
 

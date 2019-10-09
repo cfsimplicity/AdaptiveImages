@@ -1,6 +1,8 @@
 component{
 
-	variables.version = "2.1.3";
+	variables.version = "2.1.3-develop";
+	variables.isACF = ( server.coldfusion.productname IS "ColdFusion Server" );
+	variables.isLucee = ( server.coldfusion.productname IS "Lucee" );
 
 	function init(
 		required array resolutions // the resolution break-points to use (screen widths, in pixels, any order you like)
@@ -168,8 +170,8 @@ component{
 	}
 
 	private void function checkCachedImageIsNotLargerThanSource( required string cachedFilePath, required string sourceFilePath ){
-		cachedFileSize = GetFileInfo( cachedFilePath ).size;
-		sourceFileSize = GetFileInfo( sourceFilePath ).size;
+		cachedFileSize = _GetFileInfo( cachedFilePath ).size;
+		sourceFileSize = _GetFileInfo( sourceFilePath ).size;
 		if( cachedFileSize GT sourceFileSize ){
 			_log( "AI: Scaled image is #( cachedFileSize - sourceFileSize )# bytes larger than the original. Copying original instead." );
 			FileCopy( sourceFilePath, cachedFilePath );
@@ -306,9 +308,9 @@ component{
 	//This check is expensive: disabled by default, but use if images change frequently and you are not using deleteCachedCopies() when performing updates
 	private boolean function fileHasBeenUpdated( required string sourceFilePath, required string cachedFilePath ){
 		// get last modified of cached file
-		var cacheDate = GetFileInfo( cachedFilePath ).lastModified; 
+		var cacheDate = _GetFileInfo( cachedFilePath ).lastModified; 
 		// get last modified of original
-		var sourceDate = GetFileInfo( sourceFilePath ).lastModified;
+		var sourceDate = _GetFileInfo( sourceFilePath ).lastModified;
 		_log( "AI: Checking for source updates: Cached file modified: #cacheDate#, source file modified: #sourceDate#" );
 		return ( cacheDate LT sourceDate );
 	}
@@ -336,7 +338,7 @@ component{
 		cfheader( name: "Content-type", value: mimeType );
 		if( IsNumeric( browserCacheSeconds ) )
 			cfheader( name: "Cache-Control", value: "private,max-age=#browserCacheSeconds#" );
-		var fileInfo = GetFileInfo( filepath );
+		var fileInfo = _GetFileInfo( filepath );
 		cfheader( name: "Content-Length", value: fileInfo.size );
 		cfcontent( file: filepath, type: mimeType );
 		abort;
@@ -344,6 +346,15 @@ component{
 
 	private void function deleteCookie(){
 		cfcookie( name: "resolution", value: "deleted", expires: "now" ); //Change value to make testable
+	}
+
+	private struct function _GetFileInfo( required string path ){
+		if( !isLucee )
+			return GetFileInfo( arguments.path );
+		var result = FileInfo( arguments.path );
+		// support GetFileInfo().lastmodified
+		result.lastmodified = result.dateLastModified;
+		return result;
 	}
 
 }
