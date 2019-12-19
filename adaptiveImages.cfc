@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.1.5";
+	variables.version = "2.1.5-develop";
 	variables.isACF = ( server.coldfusion.productname IS "ColdFusion Server" );
 	variables.isLucee = ( server.coldfusion.productname IS "Lucee" );
 
