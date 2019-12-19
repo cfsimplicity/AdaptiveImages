@@ -1,6 +1,6 @@
 component{
 
-	variables.version = "2.1.4";
+	variables.version = "2.1.5";
 	variables.isACF = ( server.coldfusion.productname IS "ColdFusion Server" );
 	variables.isLucee = ( server.coldfusion.productname IS "Lucee" );
 
@@ -77,14 +77,20 @@ component{
 			return sendImage( cachedFilePath, mimeType );
 		}
 		catch( any exception ){
+			if( config.logErrors OR config.writeLogs ){
+				var errorLogText = "AI Error";
+				if( arguments.KeyExists( "originalUrl" ) )
+					errorLogText &= " serving #arguments.originalUrl#";
+				errorLogText &= ": ";
+			}
 			if( !DirectoryExists( cacheFolderPath ) OR !FileExists( cachedFilePath ) ){
 				if( config.logErrors OR config.writeLogs )
-					WriteLog( file: config.logFilename, text: "AI: Error Occured : cached image should exist according to FO cache but is missing. Clearing FO cache." );
+					WriteLog( file: config.logFilename, text: errorLogText & "cached image should exist according to FO cache but is missing. Clearing FO cache." );
 				clearFileOperationsCache();
 			}
 			else {
 				if( config.logErrors OR config.writeLogs )
-					WriteLog( file: config.logFilename, text: "AI: Error Occured : #exception.message#" );
+					WriteLog( file: config.logFilename, text: errorLogText & exception.message );
 				cfheader( statuscode: "503", statustext: "Temporary problem" );
 				abort;
 			}
