@@ -1,3 +1,6 @@
+## 2.1.5 - 19 December 2019
+- \#9 Record the originally requested image URL when logging errors
+
 ## 2.1.4 - 9 October 2019
 - \#8 Replace GetFileInfo() with faster FileInfo() if using Lucee
 
